@@ -1,102 +1,106 @@
-import { useState, useEffect, useRef } from 'react'
-import { forwardRef } from 'react/cjs/react.production.min'
-import "./index.css"
-import { words } from "./words"
-
-const NUM_OF_WORDS_PER_LINE = 13
-
-function generateRandomWords(){
-  const shuffledWords = words 
-    .map(value => ({ value, sort: Math.random() }))
-    .sort((a, b) => a.sort - b.sort)
-    .map(({ value }) => value)
-
-  return shuffledWords
-}
-
-function wordsToLines(words){
-  const lineSize = NUM_OF_WORDS_PER_LINE
-  const lines = []
-
-  for(let i = 0; i < words.length; i += lineSize){
-    lines.push(words.slice(i, i + lineSize))
-  }
-
-  return lines
-}
-
-const Word = forwardRef(({isCurrent, isWrong, value}, ref) => {
-  const classStates = []
-
-  if (isCurrent) classStates.push("typing")
-  if (isWrong) classStates.push("wrong")
-
-  return (
-    <p className={`word-generated ${classStates.join(' ')}`} ref={ref}>{value}</p>
-  )
-})
+import { useState, useRef } from "react";
+import "./index.css";
+import { generateRandomWords } from "./lib/words";
+import CountdownClock from "./components/CountdownClock";
+import WordsRenderer from "./components/WordsRenderer";
 
 function App() {
-  const [currentTypeWordIdx, setCurrentTypeWordIdx] = useState(0)
-  const [words, setWords] = useState([])
-  const [lines, setLines] = useState([])
-  const [typedWords, setTypedWords] = useState("")
-  const [currentTyping, setCurrentTyping] = useState("")
+  const [currentTypeWordIdx, setCurrentTypeWordIdx] = useState(0);
+  const [typedWords, setTypedWords] = useState([]);
+  const [currentTyping, setCurrentTyping] = useState("");
+  const [timeDuration, setTimeDuration] = useState(60);
+  const [started, setStarted] = useState(false);
+  const [finished, setFinished] = useState(false);
 
-  const inputRef = useRef()
-  const currentWordRef = useRef()
+  const [words, setWords] = useState(() => {
+    const shuffledWords = generateRandomWords();
+    return shuffledWords;
+  });
 
-  useEffect(() => {
+  const inputRef = useRef();
+  const counterRef = useRef({})
+  const wordsRendererRef = useRef({})
+
+  const restart = () => {
     const shuffledWords = generateRandomWords()
-    const lines = wordsToLines(shuffledWords)
+
     setWords(shuffledWords)
-    setLines(lines)
-  }, [])
+    setTypedWords([])
+    setCurrentTyping("")
+    setCurrentTypeWordIdx(0)
+    setStarted(false)
+    setFinished(false)
+    counterRef.current.reset()
+    wordsRendererRef.current.reset()
+    inputRef.current.value = ""
+  }
 
+  const gameOver = () => {
+    console.log("game is over")
+    setFinished(true);
+    console.log(typedWords)
+  };
 
-  const checkWordIsWrong = (idx, word) => {
-    if (idx > currentTypeWordIdx) return false;
-    if (idx === currentTypeWordIdx) return !words[idx].includes(currentTyping);
+  const renderResult = () => {
 
-    console.log(word, currentTyping, word.includes(currentTyping))
-
-    return !words[idx].includes(typedWords[idx])
   }
 
   const onTyping = (e) => {
-    const value = inputRef.current.value || ""
-    const keyPress = e.nativeEvent.data
-    const trimmedValue = value.trim()
+    const value = inputRef.current.value || "";
+    const keyPress = e.nativeEvent.data;
+    const trimmedValue = value.trim();
 
-    if (keyPress === " " && trimmedValue !== ""){
-      inputRef.current.value = ""
-      setCurrentTyping("")
-      setCurrentTypeWordIdx((prev) => prev + 1)
-      setTypedWords((prev) => [...prev, trimmedValue])
+    if (finished) return;
+
+    if (keyPress === " " && trimmedValue !== "") {
+      inputRef.current.value = "";
+      setCurrentTyping("");
+      setCurrentTypeWordIdx((prev) => prev + 1);
+      setTypedWords((prev) => [...prev, trimmedValue]);
     } else {
-      setCurrentTyping(trimmedValue)
+      setCurrentTyping(trimmedValue);
     }
-    console.log(currentWordRef.current)
-  }
+
+    if (!started) setStarted(true);
+  };
+  console.log("render")
 
   return (
     <div className="app">
-      {
-        words && (
-        <div className="word-wrapper">
-          <div className="text-to-type">
-            { words.map((word, wordIdx) => {
-                const idx = wordIdx
-                return (<Word ref={currentWordRef} isCurrent={currentTypeWordIdx === idx} isWrong={checkWordIsWrong(idx, word)} key={idx} value={word} />)
-              })
-            }
-          </div>
-        </div>
-        )
-      }
-      <input type="text" ref={inputRef} onChange={onTyping} />
+      <div className="words-renderer">
+        {
+          finished && 
+          (
+            <div className="finish-banner">
+              <div className="banner-text">
+                Game is over!
+              </div>
+            </div>
+          )
+        }
+        <WordsRenderer
+          words={words}
+          currentTyping={currentTyping}
+          currentTypeWordIdx={currentTypeWordIdx}
+          typedWords={typedWords}
+          wordsRendererRef={wordsRendererRef}
+        />
+      </div>
+
+      <div className="controller">
+        <input type="text" ref={inputRef} onChange={onTyping} />
+        <CountdownClock
+          isStarted={started}
+          initialSecs={timeDuration}
+          onTimeout={gameOver}
+          counterRef={counterRef}
+        />
+        <button onClick={() => restart()}>Reset</button>
+      </div>
+      
+      <div className="result">{typedWords.length / timeDuration * 60} wpm</div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
