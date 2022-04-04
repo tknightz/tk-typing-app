@@ -1,0 +1,55 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.app {
+  margin: 0 auto;
+  max-width: 1280px;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+input {
+  width: 60%;
+  height: 2rem;
+  font-size: 20px;
+}
+
+.line {
+  display: flex;
+  justify-content: space-between;
+}
+
+
+.word-wrapper {
+  height: 7rem;
+  max-width: 60%;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.word-generated {
+  padding: 5px;
+  margin: 0;
+  font-size: 20px;
+  border-radius: 5px;
+  margin: 2px 5px;
+  display: inline-block;
+}
+
+.typing {
+  background: #298be0;
+  color: white;
+}
+
+.wrong {
+  color: white;
+  background: #e26565;
+}
