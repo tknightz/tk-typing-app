@@ -125,9 +125,11 @@ function App() {
         <button onClick={() => restart()}>Reset</button>
       </div>
       
-      <div className="result">Gross: {result.gross} wpm</div>
-      <div className="result">Net: {result.net} wpm</div>
-      <div className="result"> Accuracy: {result.accuracy * 100} % </div>
+      <div className="result">
+        <span className="result-grossspeed">Gross: <b>{result.gross} WPM</b></span>
+        <span className="result-netspeed">Net: <b>{result.net} WPM</b></span>
+        <span className="result-accuracy"> Accuracy: <b>{result.accuracy * 100} %</b></span>
+      </div>
     </div>
   );
 }

@@ -28,14 +28,22 @@ input {
   font-size: 20px;
   height: 100%;
   flex: 1;
+  border: 2px solid black;
+  border-radius: 5px;
 }
 
 button {
   height: 100%;
   background: white;
-  border: 2px solid;
+  border: 2px solid black;
   border-radius: 5px;
   font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #49c1f2;
+  color: white;
 }
 
 .counter {
@@ -137,4 +145,15 @@ button {
   background: #e26565;
   color: white;
   text-decoration: none;
+}
+
+.result {
+  display: flex;
+  max-width: 60%;
+  margin-top: 15px;
+  font-size: small;
+}
+
+.result span {
+  margin-right: 15px;
 }
