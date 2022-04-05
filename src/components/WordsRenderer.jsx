@@ -35,7 +35,7 @@ function WordsRender({words, typedWords, currentTypeWordIdx, currentTyping, word
 
   const checkWordIsWrong = (idx) => {
     if (idx > currentTypeWordIdx) return false;
-    if (idx === currentTypeWordIdx) return !words[idx].includes(currentTyping);
+    if (idx === currentTypeWordIdx) return !words[idx].startsWith(currentTyping);
 
     return words[idx] !== typedWords[idx]
   }
