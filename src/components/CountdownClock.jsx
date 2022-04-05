@@ -1,10 +1,15 @@
 import { memo } from "react";
 import { useState, useEffect } from 'react'
 
-function CountdownClock({initialSecs=0, onTimeout, isStarted, counterRef}){
+function CountdownClock({initialSecs=0, onTimeout, onTick, isStarted, counterRef}){
   const [seconds, setSeconds] = useState(initialSecs)
   const [finished, setFinished] = useState(initialSecs <= 0)
+
   let counter = null
+
+  useEffect(() => {
+    if (onTick) onTick(initialSecs - seconds)
+  }, [seconds])
 
   useEffect(() => {
     if (isStarted){

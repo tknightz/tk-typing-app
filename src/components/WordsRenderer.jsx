@@ -15,7 +15,7 @@ const Word = forwardRef(({isCurrent, isWrong, isTyped, value}, ref) => {
 
 
 
-function WordsRender({words, typedWords, currentTypeWordIdx, currentTyping, wordsRendererRef}){
+function WordsRenderer({words, typedWords, currentTypeWordIdx, currentTyping, wordsRendererRef}){
   const [offset, setOffset] = useState(0)
   const currentWordRef = useRef()
 
@@ -37,7 +37,7 @@ function WordsRender({words, typedWords, currentTypeWordIdx, currentTyping, word
     if (idx > currentTypeWordIdx) return false;
     if (idx === currentTypeWordIdx) return !words[idx].startsWith(currentTyping);
 
-    return words[idx] !== typedWords[idx]
+    return !typedWords[idx].isNiceDone
   }
 
   return (
@@ -53,4 +53,4 @@ function WordsRender({words, typedWords, currentTypeWordIdx, currentTyping, word
   )
 }
 
-export default WordsRender;
+export default WordsRenderer;

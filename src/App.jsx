@@ -11,6 +11,13 @@ function App() {
   const [timeDuration, setTimeDuration] = useState(60);
   const [started, setStarted] = useState(false);
   const [finished, setFinished] = useState(false);
+  const [result, setResult] = useState({
+    gross: 0,
+    net: 0,
+    accuracy: 1,
+  })
+  const [wrongTypedWords, setWrongTypedWords] = useState([])
+  const [fixedWords, setFixedWords] = useState(new Set())
 
   const [words, setWords] = useState(() => {
     const shuffledWords = generateRandomWords();
@@ -30,19 +37,33 @@ function App() {
     setCurrentTypeWordIdx(0)
     setStarted(false)
     setFinished(false)
+    setResult({gross: 0, net: 0, accuracy: 1})
+    setFixedWords(new Set())
+    setWrongTypedWords([])
+
+
     counterRef.current.reset()
     wordsRendererRef.current.reset()
     inputRef.current.value = ""
   }
 
   const gameOver = () => {
-    console.log("game is over")
+    console.log("Game is Over!!!")
     setFinished(true);
-    console.log(typedWords)
   };
 
-  const renderResult = () => {
 
+  const onTimeRun = (passedSeconds) => {
+    renderResult(typedWords, passedSeconds)
+  }
+
+  const renderResult = (typedWords, passedSeconds) => {
+    if (passedSeconds === 0) return;
+    const gross = (typedWords.length / passedSeconds * 60).toFixed(2)
+    const net = ((typedWords.length - wrongTypedWords.length) / passedSeconds * 60).toFixed(2)
+    const accuracy = (1 - ((fixedWords.size + wrongTypedWords.length) / typedWords.length).toFixed(2))
+
+    setResult({gross, net, accuracy})
   }
 
   const onTyping = (e) => {
@@ -52,18 +73,23 @@ function App() {
 
     if (finished) return;
 
+    if (keyPress === null) setFixedWords(prev => new Set([...prev, words[currentTypeWordIdx]]));
+
     if (keyPress === " " && trimmedValue !== "") {
+      const isNiceDone = words[currentTypeWordIdx] === trimmedValue
+
+      if (!isNiceDone) setWrongTypedWords(prev => [...prev, {word: words[currentTypeWordIdx], yourFault: trimmedValue}])
+
       inputRef.current.value = "";
       setCurrentTyping("");
       setCurrentTypeWordIdx((prev) => prev + 1);
-      setTypedWords((prev) => [...prev, trimmedValue]);
+      setTypedWords((prev) => [...prev, { word: trimmedValue, isNiceDone }]);
     } else {
       setCurrentTyping(trimmedValue);
     }
 
     if (!started) setStarted(true);
   };
-  console.log("render")
 
   return (
     <div className="app">
@@ -88,17 +114,20 @@ function App() {
       </div>
 
       <div className="controller">
-        <input type="text" ref={inputRef} onChange={onTyping} />
+        <input type="text" ref={inputRef} onChange={onTyping} autoComplete="off" />
         <CountdownClock
           isStarted={started}
           initialSecs={timeDuration}
           onTimeout={gameOver}
+          onTick={(secs) => onTimeRun(secs)}
           counterRef={counterRef}
         />
         <button onClick={() => restart()}>Reset</button>
       </div>
       
-      <div className="result">{typedWords.length / timeDuration * 60} wpm</div>
+      <div className="result">Gross: {result.gross} wpm</div>
+      <div className="result">Net: {result.net} wpm</div>
+      <div className="result"> Accuracy: {result.accuracy * 100} % </div>
     </div>
   );
 }
