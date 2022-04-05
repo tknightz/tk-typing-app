@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import "./index.css";
+import "./App.css";
 import { generateRandomWords } from "./lib/words";
 import CountdownClock from "./components/CountdownClock";
 import WordsRenderer from "./components/WordsRenderer";

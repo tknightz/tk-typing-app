@@ -1,42 +1,159 @@
-.App {
-  text-align: center;
+* {
+  box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+  margin: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.app {
+  margin: 0 auto;
+  max-width: 1280px;
+  height: 100vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  flex-direction: column;
 }
 
-.App-link {
-  color: #61dafb;
+.controller {
+  width: 60%;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+input {
+  font-size: 20px;
+  height: 100%;
+  flex: 1;
+  border: 2px solid black;
+  border-radius: 5px;
 }
 
 button {
-  font-size: calc(10px + 2vmin);
+  height: 100%;
+  background: white;
+  border: 2px solid black;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #49c1f2;
+  color: white;
+}
+
+.counter {
+  height: 100%;
+  color: black;
+  line-height: 1.2;
+  font-weight: bold;
+  padding: 5px;
+  border-radius: 5px;
+  border: 2px solid black;
+  display: flex;
+  justify-content: center;
+}
+
+.line {
+  display: flex;
+  justify-content: space-between;
+}
+
+
+.words-renderer {
+  max-width: 60%;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.finish-banner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  font-size: 49px;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  z-index: 2;
+  background: #ff7f2a14;
+  backdrop-filter: blur(2px);
+  border-radius: 5px;
+}
+
+.banner-text {
+  width: 100%;
+  color: #ffffff;
+  font-weight: bold;
+  text-transform: uppercase;
+  animation: gameover .2s linear infinite alternate;
+  border: 3px solid white;
+  background: #ff6a6a;
+}
+
+@keyframes gameover {
+  from { color: #fff }
+  to { color: #ffad01 }
+}
+
+.word-wrapper {
+  height: 7rem;
+  overflow: hidden;
+}
+
+.text-to-type {
+  transition: .3s all;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.word-generated {
+  padding: 5px;
+  margin: 0;
+  font-size: 20px;
+  border-radius: 5px;
+  margin: 2px 5px;
+  display: inline-block;
+  transition: .2s all;
+}
+
+.typing {
+  background: #49c1f2;
+  color: white;
+}
+
+.typed {
+  filter: opacity(0.5);
+}
+
+.wrong {
+  color: #e26565;
+  text-decoration: underline;
+}
+
+.nice-done {
+  color: green;
+}
+
+
+.typing.wrong {
+  background: #e26565;
+  color: white;
+  text-decoration: none;
+}
+
+.result {
+  display: flex;
+  max-width: 60%;
+  margin-top: 15px;
+  font-size: small;
+}
+
+.result span {
+  margin-right: 15px;
 }
