@@ -8,7 +8,8 @@ body {
 
 .app {
   margin: 0 auto;
-  max-width: 1280px;
+  max-width: 890px;
+  padding: 10px;
   height: 100vh;
   display: flex;
   align-items: center;
@@ -17,7 +18,7 @@ body {
 }
 
 .controller {
-  width: 60%;
+  width: 100%;
   height: 2rem;
   display: flex;
   align-items: center;
@@ -65,7 +66,6 @@ button:hover {
 
 
 .words-renderer {
-  max-width: 60%;
   margin-bottom: 20px;
   position: relative;
 }
@@ -149,7 +149,6 @@ button:hover {
 
 .result {
   display: flex;
-  max-width: 60%;
   margin-top: 15px;
   font-size: small;
 }
