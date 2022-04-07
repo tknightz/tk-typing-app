@@ -62,7 +62,7 @@ function App() {
     if (passedSeconds === 0) return;
     const gross = (typedWords.length / passedSeconds * 60).toFixed(2)
     const net = ((typedWords.length - wrongTypedWords.length) / passedSeconds * 60).toFixed(2)
-    const accuracy = (1 - ((fixedWords.size + wrongTypedWords.length) / typedWords.length).toFixed(2))
+    const accuracy = (1 - ((fixedWords.size + wrongTypedWords.length) / (typedWords.length || 1)).toFixed(2))
 
     setResult({gross, net, accuracy})
   }
