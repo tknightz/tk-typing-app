@@ -45,6 +45,7 @@ function App() {
     counterRef.current.reset()
     wordsRendererRef.current.reset()
     inputRef.current.value = ""
+    inputRef.current.focus()
   }
 
   const gameOver = () => {
@@ -91,6 +92,13 @@ function App() {
     if (!started) setStarted(true);
   };
 
+  const disableF5 = (e) => {
+    if (e.code === "F5") {
+      e.preventDefault();
+      restart()
+    }
+  }
+
   return (
     <div className="app">
       <div className="words-renderer">
@@ -114,7 +122,7 @@ function App() {
       </div>
 
       <div className="controller">
-        <input type="text" ref={inputRef} onChange={onTyping} autoComplete="off" />
+        <input type="text" ref={inputRef} onChange={onTyping} onKeyDown={disableF5} autoFocus={true} autoComplete="off" />
         <CountdownClock
           isStarted={started}
           initialSecs={timeDuration}
