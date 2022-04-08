@@ -3,8 +3,16 @@ import "./App.css";
 import { generateRandomWords } from "./lib/words";
 import CountdownClock from "./components/CountdownClock";
 import WordsRenderer from "./components/WordsRenderer";
+import { getTheme, setTheme } from "./lib/theme"
+import DarkModeBtn from "./components/DarkModeBtn"
+
+
+
 
 function App() {
+  const [themeMode, setThemeMode] = useState(() => {
+    return getTheme()
+  })
   const [currentTypeWordIdx, setCurrentTypeWordIdx] = useState(0);
   const [typedWords, setTypedWords] = useState([]);
   const [currentTyping, setCurrentTyping] = useState("");
@@ -27,6 +35,14 @@ function App() {
   const inputRef = useRef();
   const counterRef = useRef({})
   const wordsRendererRef = useRef({})
+
+  const toggleTheme = () => {
+    setThemeMode(prev => {
+      const newTheme = prev === "light" ? "dark" : "light"
+      setTheme(newTheme)
+      return newTheme
+    })
+  }
 
   const restart = () => {
     const shuffledWords = generateRandomWords()
@@ -100,43 +116,47 @@ function App() {
   }
 
   return (
-    <div className="app">
-      <div className="words-renderer">
-        {
-          finished && 
-          (
-            <div className="finish-banner">
-              <div className="banner-text">
-                Game is over!
-              </div>
-            </div>
-          )
-        }
-        <WordsRenderer
-          words={words}
-          currentTyping={currentTyping}
-          currentTypeWordIdx={currentTypeWordIdx}
-          typedWords={typedWords}
-          wordsRendererRef={wordsRendererRef}
-        />
-      </div>
+    <div className="wrapper" data-theme={themeMode}>
+      <div className="app">
+        <DarkModeBtn theme={themeMode} onClick={toggleTheme} />
 
-      <div className="controller">
-        <input type="text" ref={inputRef} onChange={onTyping} onKeyDown={disableF5} autoFocus={true} autoComplete="off" />
-        <CountdownClock
-          isStarted={started}
-          initialSecs={timeDuration}
-          onTimeout={gameOver}
-          onTick={(secs) => onTimeRun(secs)}
-          counterRef={counterRef}
-        />
-        <button onClick={() => restart()}>Reset</button>
-      </div>
-      
-      <div className="result">
-        <span className="result-grossspeed">Gross: <b>{result.gross} WPM</b></span>
-        <span className="result-netspeed">Net: <b>{result.net} WPM</b></span>
-        <span className="result-accuracy"> Accuracy: <b>{result.accuracy * 100} %</b></span>
+        <div className="words-renderer">
+          {
+            finished && 
+            (
+              <div className="finish-banner">
+                <div className="banner-text">
+                  Game is over!
+                </div>
+              </div>
+            )
+          }
+          <WordsRenderer
+            words={words}
+            currentTyping={currentTyping}
+            currentTypeWordIdx={currentTypeWordIdx}
+            typedWords={typedWords}
+            wordsRendererRef={wordsRendererRef}
+          />
+        </div>
+
+        <div className="controller">
+          <input type="text" ref={inputRef} onChange={onTyping} onKeyDown={disableF5} autoFocus={true} autoComplete="off" />
+          <CountdownClock
+            isStarted={started}
+            initialSecs={timeDuration}
+            onTimeout={gameOver}
+            onTick={(secs) => onTimeRun(secs)}
+            counterRef={counterRef}
+          />
+          <button className="btn btn-restart" onClick={() => restart()}>Reset</button>
+        </div>
+        
+        <div className="result">
+          <span className="result-grossspeed">Gross: <b>{result.gross} WPM</b></span>
+          <span className="result-netspeed">Net: <b>{result.net} WPM</b></span>
+          <span className="result-accuracy"> Accuracy: <b>{result.accuracy * 100} %</b></span>
+        </div>
       </div>
     </div>
   );
